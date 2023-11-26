@@ -5,14 +5,13 @@ from tf_agents.trajectories import time_step as ts
 
 
 class ClassifierEnv(PyEnvironment):
-    def __init__(self, X_train: np.ndarray, y_train: np.ndarray, imb_ratio: float):
+    def __init__(self, X_train: np.ndarray, y_train: np.ndarray):
         self._action_spec = BoundedArraySpec(shape=(), dtype=np.int32, minimum=0, maximum=1, name="action")
         self._observation_spec = ArraySpec(shape=X_train.shape[1:], dtype=X_train.dtype, name="observation")
         self._episode_ended = False
 
         self.X_train = X_train
         self.y_train = y_train
-        self.imb_ratio = imb_ratio
         self.id = np.arange(self.X_train.shape[0])
 
         self.episode_step = 0
@@ -40,17 +39,10 @@ class ClassifierEnv(PyEnvironment):
         self.episode_step += 1
 
         if action == env_action:  # Correct action
-            if env_action:  # Minority
-                reward = 1  # True Positive
-            else:  # Majority
-                reward = self.imb_ratio  # True Negative
-
+            reward = 1  # True Positive
         else:  # Incorrect action
-            if env_action:  # Minority
-                reward = -1  # False Negative
-                self._episode_ended = True  # Stop episode when minority class is misclassified
-            else:  # Majority
-                reward = -self.imb_ratio  # False Positive
+            reward = -1  # False Negative
+            self._episode_ended = True  # Stop episode when minority class is misclassified
 
         # print(reward)
 

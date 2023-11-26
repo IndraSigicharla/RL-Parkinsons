@@ -6,7 +6,6 @@ import tensorflow as tf
 from classifierenv import ClassifierEnv
 from metrics import (classification_metrics, decision_function,
                             network_predictions, plot_pr_curve, plot_roc_curve)
-from utils import imbalance_ratio
 from tensorflow import data
 from tensorflow.keras.optimizers import Adam
 from tf_agents.agents.dqn.dqn_agent import DdqnAgent
@@ -60,11 +59,9 @@ class TrainDQN():
             log_dir = "./logs/" + NOW
         self.writer = tf.summary.create_file_writer(log_dir)
 
-    def compile_model(self, X_train, y_train, layers: list = [], imb_ratio: float = None, loss_fn=common.element_wise_squared_loss) -> None:
-        if imb_ratio is None:
-            imb_ratio = imbalance_ratio(y_train)
+    def compile_model(self, X_train, y_train, layers: list = [], loss_fn=common.element_wise_squared_loss) -> None:
 
-        self.train_env = TFPyEnvironment(ClassifierEnv(X_train, y_train, imb_ratio))
+        self.train_env = TFPyEnvironment(ClassifierEnv(X_train, y_train))
         self.global_episode = tf.Variable(0, name="global_episode", dtype=np.int64, trainable=False)  # Global train episode counter
 
         epsilon_decay = tf.compat.v1.train.polynomial_decay(
@@ -111,12 +108,12 @@ class TrainDQN():
         assert self.compiled, "Model must be compiled with model.compile_model(X_train, y_train, layers) before training."
 
         if self.progressbar:
-            print(f"\033[92mCollecting data for {self.warmup_steps:_} steps... This might take a few minutes...\033[0m")
+            print(f"\033[92mCollecting data for {self.warmup_steps:,} steps... This might take a few minutes...\033[0m")
 
         self.warmup_driver.run(time_step=None, policy_state=self.random_policy.get_initial_state(self.train_env.batch_size))
 
         if self.progressbar:
-            print(f"\033[92m{self.replay_buffer.num_frames():_} frames collected!\033[0m")
+            print(f"\033[92m{self.replay_buffer.num_frames():,} frames collected!\033[0m")
 
         dataset = self.replay_buffer.as_dataset(sample_batch_size=self.batch_size, num_steps=self.n_step_update + 1,
                                                 num_parallel_calls=data.experimental.AUTOTUNE).prefetch(data.experimental.AUTOTUNE)
