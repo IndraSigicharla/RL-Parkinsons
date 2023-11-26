@@ -1,7 +1,6 @@
 import os
 from dqn import TrainDQN
 from data import get_train_test_val, load_csv
-from utils import rounded_dict
 from tensorflow.keras.layers import Dense, Dropout
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
@@ -26,11 +25,8 @@ gamma = 0.0
 min_epsilon = 0.5
 decay_episodes = episodes // 10
 
-min_class = [1]
-maj_class = [0]
 X_train, y_train, X_test, y_test = load_csv("./data/train_data.csv", "./data/test_data.csv", "status", [], normalization=True)
-X_train, y_train, X_test, y_test, X_val, y_val = get_train_test_val(X_train, y_train, X_test, y_test,
-                                                                    min_class, maj_class, val_frac=0.2)
+X_train, y_train, X_test, y_test, X_val, y_val = get_train_test_val(X_train, y_train, X_test, y_test, val_frac=0.2)
 
 model = TrainDQN(episodes, warmup_steps, learning_rate, gamma, min_epsilon, decay_episodes, target_update_period=target_update_period,
                   target_update_tau=target_update_tau, batch_size=batch_size, collect_steps_per_episode=collect_steps_per_episode,
@@ -40,5 +36,4 @@ model.compile_model(X_train, y_train, layers)
 model.q_net.summary()
 model.train(X_val, y_val, "F1")
 
-stats = model.evaluate(X_test, y_test, X_train, y_train)
-print(rounded_dict(stats))
+print({k: round(v, 6) for k, v in stats.items()})

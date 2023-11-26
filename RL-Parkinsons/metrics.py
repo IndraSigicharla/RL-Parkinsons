@@ -1,8 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-from sklearn.metrics import (auc, average_precision_score, confusion_matrix,
-                             f1_score, precision_recall_curve, roc_curve)
+from sklearn.metrics import (auc, average_precision_score, confusion_matrix, f1_score, precision_recall_curve, roc_curve)
 from tensorflow import constant
 from tf_agents.trajectories import time_step
 
@@ -23,7 +22,7 @@ def network_predictions(network, X: np.ndarray) -> dict:
         raise ValueError(f"`X` must be of type `np.ndarray` not {type(X)}")
 
     q, _ = network(X, step_type=constant([time_step.StepType.FIRST] * X.shape[0]), training=False)
-    return np.argmax(q.numpy(), axis=1)  # Max action for each x in X
+    return np.argmax(q.numpy(), axis=1)
 
 
 def decision_function(network, X: np.ndarray) -> dict:

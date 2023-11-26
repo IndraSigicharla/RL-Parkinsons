@@ -3,7 +3,6 @@ from tf_agents.environments.py_environment import PyEnvironment
 from tf_agents.specs.array_spec import ArraySpec, BoundedArraySpec
 from tf_agents.trajectories import time_step as ts
 
-
 class ClassifierEnv(PyEnvironment):
     def __init__(self, X_train: np.ndarray, y_train: np.ndarray):
         self._action_spec = BoundedArraySpec(shape=(), dtype=np.int32, minimum=0, maximum=1, name="action")

@@ -37,8 +37,7 @@ def load_csv(fp_train: str, fp_test: str, label_col: str, drop_cols: List[str], 
 
     return X_train.values, y_train.values, X_test.values, y_test.values  # Numpy arrays
 
-def get_train_test_val(X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray, y_test: np.ndarray, min_classes: List[int],
-                       maj_classes: List[int], val_frac: float = 0.25, print_stats: bool = True) -> TrainTestValData:
+def get_train_test_val(X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray, y_test: np.ndarray, val_frac: float = 0.25, print_stats: bool = True) -> TrainTestValData:
     if not 0 < val_frac < 1:
         raise ValueError(f"{val_frac} is not in interval 0 < x < 1.")
     if not isinstance(print_stats, bool):

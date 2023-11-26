@@ -4,8 +4,7 @@ from datetime import datetime
 import numpy as np
 import tensorflow as tf
 from classifierenv import ClassifierEnv
-from metrics import (classification_metrics, decision_function,
-                            network_predictions, plot_pr_curve, plot_roc_curve)
+from metrics import (classification_metrics, decision_function, network_predictions, plot_pr_curve, plot_roc_curve)
 from tensorflow import data
 from tensorflow.keras.optimizers import Adam
 from tf_agents.agents.dqn.dqn_agent import DdqnAgent
@@ -16,7 +15,6 @@ from tf_agents.policies.random_tf_policy import RandomTFPolicy
 from tf_agents.replay_buffers.tf_uniform_replay_buffer import TFUniformReplayBuffer
 from tf_agents.utils import common
 from tqdm import tqdm
-
 
 class TrainDQN():
     def __init__(self, episodes: int, warmup_steps: int, learning_rate: float, gamma: float, min_epsilon: float, decay_episodes: int,
