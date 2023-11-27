@@ -42,7 +42,7 @@ class TrainDQN():
 
         self.val_every = val_every if val_every is not None else self.episodes // min(50, self.episodes)
 
-        self.model_path = model_path if model_path is not None else f"./models/model.pkl"
+        self.model_path = model_path if model_path is not None else "./models/model.pkl"
 
         if log_dir is None: log_dir = f"./logs/{NOW}"
         
