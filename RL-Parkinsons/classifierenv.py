@@ -1,4 +1,5 @@
 import numpy as np
+import silence_tensorflow.auto
 from tf_agents.environments.py_environment import PyEnvironment
 from tf_agents.specs.array_spec import ArraySpec, BoundedArraySpec
 from tf_agents.trajectories import time_step as ts

@@ -1,9 +1,8 @@
 import os
+import silence_tensorflow.auto
 from dqn import TrainDQN
 from data import get_train_test_val, load_csv
 from tensorflow.keras.layers import Dense, Dropout
-
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 episodes = 100_000
 warmup_steps = 170_000
@@ -21,7 +20,7 @@ layers = [Dense(256, activation="relu"), Dropout(0.2),
           Dense(2, activation=None)]
 
 learning_rate = 0.00025
-gamma = 0.0
+gamma = 1.0
 min_epsilon = 0.5
 decay_episodes = episodes // 10
 
@@ -36,4 +35,5 @@ model.compile_model(X_train, y_train, layers)
 model.q_net.summary()
 model.train(X_val, y_val, "F1")
 
+stats = model.evaluate(X_test, y_test, X_train, y_train)
 print({k: round(v, 6) for k, v in stats.items()})

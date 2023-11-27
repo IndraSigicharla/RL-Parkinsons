@@ -1,6 +1,6 @@
 import pickle
 from datetime import datetime
-
+import silence_tensorflow.auto
 import numpy as np
 import tensorflow as tf
 from classifierenv import ClassifierEnv
@@ -79,6 +79,7 @@ class TrainDQN():
                                epsilon_greedy=epsilon_decay,
                                n_step_update=self.n_step_update,
                                gradient_clipping=self.gradient_clipping)
+                               
         self.agent.initialize()
 
         self.random_policy = RandomTFPolicy(self.train_env.time_step_spec(), self.train_env.action_spec())

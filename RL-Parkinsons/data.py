@@ -1,24 +1,17 @@
 import os
 from typing import List, Tuple
+import silence_tensorflow.auto
 
 import numpy as np
 from pandas import read_csv
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
-from tensorflow.keras.datasets import cifar10, fashion_mnist, imdb, mnist
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 TrainTestData = Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]
 TrainTestValData = Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]
 
 def load_csv(fp_train: str, fp_test: str, label_col: str, drop_cols: List[str], normalization: bool = False) -> TrainTestData:
-    if not os.path.isfile(fp_train):
-        raise FileNotFoundError(f"`fp_train` {fp_train} does not exist.")
-    if not os.path.isfile(fp_test):
-        raise FileNotFoundError(f"`fp_test` {fp_test} does not exist.")
-    if not isinstance(normalization, bool):
-        raise TypeError(f"`normalization` must be of type `bool`, not {type(normalization)}")
-
     X_train = read_csv(fp_train).astype(np.float32)  # DataFrames directly converted to float32
     X_test = read_csv(fp_test).astype(np.float32)
 
@@ -37,13 +30,7 @@ def load_csv(fp_train: str, fp_test: str, label_col: str, drop_cols: List[str], 
 
     return X_train.values, y_train.values, X_test.values, y_test.values  # Numpy arrays
 
-def get_train_test_val(X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray, y_test: np.ndarray, val_frac: float = 0.25, print_stats: bool = True) -> TrainTestValData:
-    if not 0 < val_frac < 1:
-        raise ValueError(f"{val_frac} is not in interval 0 < x < 1.")
-    if not isinstance(print_stats, bool):
-        raise TypeError(f"`print_stats` must be of type `bool`, not {type(print_stats)}.")
-
+def get_train_test_val(X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray, y_test: np.ndarray, val_frac: float = 0.25) -> TrainTestValData:
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=val_frac, stratify=y_train)
-
     return X_train, y_train, X_test, y_test, X_val, y_val
 
