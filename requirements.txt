@@ -1,0 +1,9 @@
+tensorflow
+tf_agents
+numpy
+matplotlib
+pandas
+seaborn
+scikit-learn
+tqdm
+silence-tensorflow
