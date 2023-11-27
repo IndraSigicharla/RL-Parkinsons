@@ -10,13 +10,14 @@ memory_length = warmup_steps
 batch_size = 32
 collect_steps_per_episode = 2000
 collect_every = 500
-
 target_update_period = 800
 target_update_tau = 1
 n_step_update = 1
 
-layers = [Dense(256, activation="relu"), Dropout(0.2),
-          Dense(256, activation="relu"), Dropout(0.2),
+layers = [Dense(256, activation="relu"),
+          Dropout(0.2),
+          Dense(256, activation="relu"), 
+          Dropout(0.2),
           Dense(2, activation=None)]
 
 learning_rate = 0.00025
@@ -24,7 +25,8 @@ gamma = 1.0
 min_epsilon = 0.5
 decay_episodes = episodes // 10
 
-X_train, y_train, X_test, y_test = load_csv("./data/train_data.csv", "./data/test_data.csv", "status", [], normalization=True)
+data_files = ["./data/train_data.csv", "./data/test_data.csv"]
+X_train, y_train, X_test, y_test = load_csv(*data_files, label_col="status", drop_cols=[], normalization=True)
 X_train, y_train, X_test, y_test, X_val, y_val = get_train_test_val(X_train, y_train, X_test, y_test, val_frac=0.2)
 
 model = TrainDQN(episodes, warmup_steps, learning_rate, gamma, min_epsilon, decay_episodes, target_update_period=target_update_period,

@@ -24,34 +24,27 @@ class ClassifierEnv(PyEnvironment):
         return self._observation_spec
 
     def _reset(self):
-        np.random.shuffle(self.id)  # Shuffle the X and y data
-        self.episode_step = 0  # Reset episode step counter at the end of every episode
+        np.random.shuffle(self.id) 
+        self.episode_step = 0  
         self._state = self.X_train[self.id[self.episode_step]]
-        self._episode_ended = False  # Reset terminal condition
-
+        self._episode_ended = False  
         return ts.restart(self._state)
 
     def _step(self, action: int):
-        if self._episode_ended:
-            return self.reset()
+        if self._episode_ended: return self.reset()
 
-        env_action = self.y_train[self.id[self.episode_step]]  # The label of the current state
+        env_action = self.y_train[self.id[self.episode_step]] 
         self.episode_step += 1
 
-        if action == env_action:  # Correct action
-            reward = 1  # True Positive
-        else:  # Incorrect action
-            reward = -1  # False Negative
-            self._episode_ended = True  # Stop episode when minority class is misclassified
+        if action == env_action: reward = 1  
+        else: 
+            reward = -1 
+            self._episode_ended = True  
 
         # print(reward)
 
-        if self.episode_step == self.X_train.shape[0] - 1:  # If last step in data
-            self._episode_ended = True
+        if self.episode_step == self.X_train.shape[0] - 1: self._episode_ended = True
+        
+        self._state = self.X_train[self.id[self.episode_step]]  
 
-        self._state = self.X_train[self.id[self.episode_step]]  # Update state with new datapoint
-
-        if self._episode_ended:
-            return ts.termination(self._state, reward)
-        else:
-            return ts.transition(self._state, reward)
+        return ts.termination(self._state, reward) if self._episode_ended else ts.transition(self._state, reward)
